@@ -1,0 +1,2 @@
+
+./pressure-server --pprof-port=10010 --port=8019 --data-size=4k
