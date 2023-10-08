@@ -4,8 +4,72 @@ Go TCP library: <https://github.com/chenjunpc2008/go-tcp>
 ## tcpclient
 Go TCP client
 
+```
+accepting connection:
+
++------------+    +-----------------------------+    +----------------+
+|            |    |                             |    |                |
+|            |    |                             |    |                |
+| tcp client |--->| establish remote connection |--->| create session |
+|            |    |                             |    |                |
+|            |    |                             |    |                |
++------------+    +-----------------------------+    +----------------+
+
+in session:
+
++-----------------+    +----------------------+    +-------------------------+    +------------+
+|                 |    | Handler.Depack()     |    |                         |    |            |
+| read connection |--->| unpack packet payload|--->| Handler.OnReceiveData() |--->| user logic |
+|                 |    |                      |    |                         |    |            |
++-----------------+    +----------------------+    +-------------------------+    +------------+
+
++------------+    +-----------------------+    +---------------------+    
+|            |    |                       |    | Handler.Pack()      | 
+| user logic |--->| client.SendToServer() |--->| pack packet payload |
+|            |    |                       |    |                     | 
++------------+    +-----------------------+    +---------------------+
+                                                           |
++------------------------+    +------------------+         |
+|                        |    |                  |         |
+| Handler.OnSendedData() |<---| write connection |<--------|
+|                        |    |                  |   
++------------------------+    +------------------+  
+```
+
 ## tcpserver
 Go TCP server
+
+```
+accepting connection:
+
++------------+    +-------------------+    +----------------+
+|            |    |                   |    |                |
+|            |    |                   |    |                |
+| tcp server |--->| accept connection |--->| create session |
+|            |    |                   |    |                |
+|            |    |                   |    |                |
++------------+    +-------------------+    +----------------+
+
+in session:
+
++-----------------+    +----------------------+    +-------------------------+    +------------+
+|                 |    | Handler.Depack()     |    |                         |    |            |
+| read connection |--->| unpack packet payload|--->| Handler.OnReceiveData() |--->| user logic |
+|                 |    |                      |    |                         |    |            |
++-----------------+    +----------------------+    +-------------------------+    +------------+
+
++------------+    +--------------------------+    +---------------------+    
+|            |    |                          |    | Handler.Pack()      | 
+| user logic |--->| tcpserver.SendToClient() |--->| pack packet payload |
+|            |    |                          |    |                     | 
++------------+    +--------------------------+    +---------------------+
+                                                           |
++------------------------+    +------------------+         |
+|                        |    |                  |         |
+| Handler.OnSendedData() |<---| write connection |<--------|
+|                        |    |                  |   
++------------------------+    +------------------+  
+```
 
 # benchmark
 Use ```example/pressure-server``` and ```example/pressure-client```, ```1000 concurrent clients```, ```4 KB payload``` get a result of ```100000 q/s```.
