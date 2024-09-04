@@ -287,9 +287,10 @@ for example: ```example/pressure-client```
 
     client := tcpclient.New(appHdl, cnf)
 
-    err = client.ConnectToServer(serverIP, serverPort)
+    cnct_to := 3 * time.Second
+    err = client.ConnectToServer_Timeout(serverIP, serverPort, cnct_to)
     if nil != err {
-        log.Panicln("ConnectToServer failed", err)
+        log.Panicln("ConnectToServer_Timeout failed", err)
     }
 
     // send
